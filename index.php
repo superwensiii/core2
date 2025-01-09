@@ -1,8 +1,10 @@
 <?php
-session_start(); // Start session to manage user login status
-?>
+ 
 
-<?php include "db/connect.php"; ?>
+
+ include "db/connect.php";
+
+?>
 
 <?php
 // Fetch all products initially
@@ -82,311 +84,7 @@ $conn->close();
   </style>
 </head>
 <body>
-<!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
-        <div class="container">
-        <!-- Logo and Title -->
-        <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <img src="images/logo-removebg-preview.png" alt="Logo" class="me-2" style="height: 40px;">
-            <span class="fw-bold" style="color: #333; font-size: 22px;">
-                Great Wall <span style="color: #ffb100;">Arts</span>
-            </span>
-        </a>
-        <!-- Navbar Toggler -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Navigation Menu -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto d-flex align-items-center">
-                <li class="nav-item me-4">
-                    <a class="nav-link fw-bold text-dark" href="index.php">Home</a>
-                </li>
-                <li class="nav-item me-4">
-                    <a class="nav-link fw-bold text-dark" href="main/products.php">Products</a>
-                </li>
-                <li class="nav-item me-4">
-                    <a class="nav-link fw-bold text-dark" href="main/contact.php">Contact</a>
-                </li>
-                <li class="nav-item me-4">
-                    <a class="nav-link fw-bold text-dark" href="main/about.php">About Us</a>
-                </li>
-
-                <!-- Icons -->
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark" href="#" aria-label="Notifications">
-                        <i class="fas fa-bell fs-5"></i>
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark" href="#" aria-label="Orders">
-                        <i class="fas fa-shopping-bag fs-5"></i>
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark position-relative" href="#" id="cartIcon" aria-label="Cart">
-                        <i class="fas fa-cart-shopping fs-5"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge bg-warning text-dark">
-                            3 <!-- Replace with PHP cart count -->
-                        </span>
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark" href="#" aria-label="Wishlist">
-                        <i class="fas fa-heart fs-5"></i>
-                    </a>
-                </li>
-
-                <!-- User Section -->
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item">
-                        <span class="nav-link fw-bold text-dark">
-                            Welcome, <?= htmlspecialchars($_SESSION['full_name']); ?>!
-                        </span>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a class="btn btn-warning text-darkfw-bold" href="user_account/user_account.php">
-                            <i class="fas fa-user-circle me-2"></i>My Account
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li class="nav-item ms-3">
-                        <a class="btn btn-outline-warning fw-bold" href="main/user_login.php">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </a>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a class="btn btn-outline-secondary fw-bold" href="main/register.php">
-                            <i class="fas fa-user-plus me-2"></i>Sign Up
-                        </a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- Cart Sidebar -->
-<div id="cartSidebar" class="cart-sidebar">
-    <div class="cart-header d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold text-dark">Your Cart</h5>
-        <button class="btn-close" id="closeCartSidebar"></button>
-    </div>
-    <div class="cart-body py-3">
-        <?php if (!empty($_SESSION['cart'])): ?>
-            <ul class="list-group">
-                <?php foreach ($_SESSION['cart'] as $item): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="fw-bold"><?= htmlspecialchars($item['name']); ?></h6>
-                            <small class="text-muted">Quantity: <?= $item['quantity']; ?></small>
-                        </div>
-                        <span class="text-success fw-bold">$<?= number_format($item['price'], 2); ?></span>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p class="text-muted text-center">Your cart is empty.</p>
-        <?php endif; ?>
-    </div>
-    <div class="cart-footer d-flex justify-content-between align-items-center border-top pt-3">
-        <a href="checkout.php" class="btn btn-warning fw-bold text-white px-4">Checkout</a>
-        <button class="btn btn-outline-danger fw-bold" id="clearCart">Clear Cart</button>
-    </div>
-</div>
-<!-- Sidebar CSS -->
-<style>
-    .cart-sidebar {
-        position: fixed;
-        top: 0;
-        right: -350px;
-        width: 350px;
-        height: 100%;
-        background-color: #fff;
-        box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
-        transition: right 0.4s ease;
-        z-index: 9999;
-        padding: 20px;
-    }
-
-    .cart-sidebar.open {
-        right: 0;
-    }
-
-    .cart-header {
-        border-bottom: 2px solid #f5f5f5;
-        padding-bottom: 10px;
-    }
-
-    .btn-warning {
-        background-color: #ffb100;
-        border-color: #ffb100;
-    }
-
-    .btn-outline-warning:hover {
-        background-color: #ffb100;
-        color: #fff;
-    }
-
-    .nav-link:hover {
-        color: #ffb100 !important;
-    }
-
-    .badge {
-        font-size: 12px;
-        padding: 5px 8px;
-        border-radius: 50%;
-    }
-</style>
-<!-- FontAwesome and Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://kit.fontawesome.com/your-fontawesome-key.js" crossorigin="anonymous"></script>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-    }
-
-    /* Main Banner Section */
-    .banner {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 10px;
-    }
-
-    .banner .btn-primary {
-      background-color: #28a745;
-      border: none;
-      padding: 10px 20px;
-    }
-
-    .banner img {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    /* Cards Section */
-    .info-card {
-      background-color: #f0f8ff;
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .info-card h5 {
-      font-size: 16px;
-    }
-
-    .info-card .btn {
-      background-color: #004085;
-      color: #fff;
-    }
-
-    .info-card.yellow {
-      background-color: #fff4e1;
-    }
-
-    /* Categories Section */
-    .category-item {
-      text-align: center;
-    }
-
-    .category-item img {
-      width: 60px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    .category-item p {
-      font-size: 14px;
-      color: gray;
-    }
-
-    .search-box-container {
-    margin-top: -8px; 
-    z-index: 1000;
-    
-    
-}
-
-.search-box-container .form-control {
-    
-    border-radius: 5%;
-    border-width: 2px;
-}
-
-.search-box-container .btn {
-    border-width: 2px;
-}
-
-  </style>
-  <div class="search-box-container bg-white py-3">
-    <div class="container bg-white">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8">
-                <form method="GET" action="search_results.php" class="d-flex w-100">
-                    <input 
-                        type="text" 
-                        name="search_box" 
-                        class="form-control border-warning" 
-                        placeholder="What do you want huh?" 
-                        aria-label="Search products"
-                        required
-                    >
-                    <button class="btn btn-outline-warning text-dark ms-2" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<?php
-include 'db/connect.php';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
-  $search_box = trim($_POST['search_box']);
-
-  try {
-      // Prepare and execute the query
-      $stmt = $conn->prepare("SELECT * FROM `products` WHERE `product_name` LIKE ?");
-      $search_term = '%' . $search_box . '%';
-      $stmt->bind_param('s', $search_term);
-      $stmt->execute();
-      $result = $stmt->get_result();
-
-      if ($result->num_rows > 0) {
-          $products = $result->fetch_all(MYSQLI_ASSOC);
-      } else {
-          $products = [];
-      }
-
-      $stmt->close(); // Close the statement
-  } catch (mysqli_sql_exception $e) {
-      echo "Error: " . $e->getMessage();
-      $products = [];
-  }
-}
-
-// Avoid closing the connection prematurely; move `$conn->close()` to the end of the script if needed.
-?>
-
-            
-            
-
-
-
-
-
-
-
-
-
-            
-          
-
-
-
-
+  <?php include "navbar.php"; ?>
 <div class="container my-5">
   <div class="row align-items-start">
     <!-- Main Banner Section with Slide -->
@@ -406,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
               <h1>Trade in Offer</h1>
               <p>Super Value Deals</p>
               <h3>Save more <span class="text-success">Coupons</span></h3>
-              <button class="btn btn-outline-dark">Shop Now</button>
+              <button class="btn btn-outline-dark"> Shop Now</button>
             </div>
           </div>
           <div class="carousel-item">
@@ -440,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
     <!-- Info Cards Section -->
     <div class="col-md-4 align-items-start">
   <!-- Info Card 1 with Background Image -->
-  <div class="info-card mb-3" style="background-image: url('images/hehe.png'); background-size: cover; background-position: center; color: white;">
+  <div class="info-card mb-3" style="background-image: url('images/events.gif'); background-size: cover; background-position: center; color: white;">
     <h5 class="text-dark">10% cashback on personal care</h5>
     <p class="text-dark">Max cashback: $12 <br> Code: <strong class="text-dark">CARE12</strong></p>
     <button class="btn  btn-sm btn-outline-warning">Shop Now</button>
@@ -589,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
 
  <!-- product section -->
  <!-- Product Cards Section -->
- <div class="container my-5">
+ <div class="container my-5"> 
   <h2 class="text-center mb-4" style="font-family: fantasy; color: #343a40;">Featured Products</h2>
   <p class="text-center" style="font-family: 'Courier New', Courier, monospace; font-size: 20px; color: gray;">
     Summer Collection - New Modern Design
@@ -614,20 +312,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
               <span class="text-dark fw-bold">₱<?php echo number_format($product['discounted_price'], 2); ?></span>
               <span class="badge bg-success ms-1"> <?php echo $product['discount_percentage']; ?>% OFF</span>
             </p>
-            <div class="d-flex justify-content-center align-items-center gap-4 mb-2">
-              <button class="btn btn-outline-warning btn-sm">
-                <i class="fas fa-shopping-cart"></i>
-              </button>
-              <button class="btn btn-outline-danger btn-sm">
-                <i class="fas fa-heart"></i>
-              </button>
-              <button 
-                class="btn btn-outline-dark btn-sm" 
-                data-bs-toggle="modal" 
-                data-bs-target="#productModal<?php echo $product['id']; ?>">
-                <i class="fas fa-eye"></i>
-              </button>
-            </div>
+            
+            <form action="cart.php" method="POST">
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+    <input type="hidden" name="product_name" value="<?php echo $product['product_name']; ?>">
+    <input type="hidden" name="price" value="<?php echo $product['discounted_price']; ?>">
+    <input type="hidden" name="quantity" value="1">
+    <input type="hidden" name="image_url" value="<?php echo $product['image_url']; ?>">
+    <!-- Add this hidden input -->
+    <input type="hidden" name="add_to_cart" value="1">
+    <button class="btn btn-outline-warning btn-sm" type="submit">
+      <i class="fas fa-shopping-cart"></i> Add to Cart
+    </button>
+  <?php else: ?>
+    <a href="main/user_login.php" class="btn btn-outline-warning btn-sm">
+      <i class="fas fa-shopping-cart"></i> Add to Cart
+    </a>
+  <?php endif; ?>
+</form>
+
+
+
             <div>
               <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="text-muted">(<?php echo rand(100, 500); ?>)</span>
@@ -638,21 +344,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_box'])) {
     <?php endforeach; ?>
   </div>
 </div>
-    <!-- End of Product Card Example -->
-  </div>
-</div> 
-
-    <!-- Compact Product Modal -->
-    
-    <!-- End of Compact Product Modal -->
-
-
-
-
-
-
-
-
 
 <div class="container py-5">
     <div class="feature-section">
@@ -736,30 +427,35 @@ BACHELOR'S DEGREE IN GRAPHIC </p>
   </script>
 
 <div class="container py-5">
-    <h1 class="section-title text-center">Principaux outils IA</h1>
-    <p class="text-center mb-5">Trouve l'inspiration grâce aux outils simples d'utilisation de CapCut.</p>
+    <h1 class="section-title text-center">Our Promo
+    </h1>
+    <p class="text-center mb-5">The best classic items and wood cratfs
+    is on sale at GWA</p>
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card">
-          <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Dreamina">
+          <img src="images/really great site.gif" class="card-img-top" alt="Dreamina">
           <div class="card-body">
-            <h5 class="card-title">Dreamina</h5>
-            <p class="card-text">Crée des images de qualité à partir d'invites de texte et d'images.</p>
+            <h5 class="card-title">Crazy Deals
+            Buy 1 Get 1 Free!
+            </h5>
+            <p class="card-text">The best classic items and wood cratfs
+            is on sale at GWA</p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card">
-          <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Générateur de voix IA">
+          <img src="images/seasonal.gif" class="card-img-top" alt="Générateur de voix IA">
           <div class="card-body">
-            <h5 class="card-title">Générateur de voix IA</h5>
-            <p class="card-text">Génère un discours réaliste à partir de texte, ou modifie des voix avec l'IA.</p>
+            <h5 class="card-title">Seasonal Sale</h5>
+            <p class="card-text">Kupal</p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card">
-          <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Vidéo longue en vidéos courtes">
+          <img src="images/events.gif" class="card-img-top" alt="Vidéo longue en vidéos courtes">
           <div class="card-body">
             <h5 class="card-title">Vidéo longue en vidéos courtes</h5>
             <p class="card-text">Transforme en 1 clic tes vidéos longues en vidéos courtes partageables.</p>

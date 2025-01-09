@@ -1,9 +1,8 @@
 <?php
-session_start(); // Start session to manage user login status
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
-
-
-
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
     <div class="container">
         <!-- Logo and Title -->
@@ -26,7 +25,7 @@ session_start(); // Start session to manage user login status
                     <a class="nav-link fw-bold text-dark" href="index.php">Home</a>
                 </li>
                 <li class="nav-item me-4">
-                    <a class="nav-link fw-bold text-dark" href="main/products.php">Products</a>
+                    <a class="nav-link fw-bold text-dark" href="products.php">Products</a>
                 </li>
                 <li class="nav-item me-4">
                     <a class="nav-link fw-bold text-dark" href="main/contact.php">Contact</a>
@@ -36,11 +35,62 @@ session_start(); // Start session to manage user login status
                 </li>
 
                 <!-- Icons -->
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark" href="#" aria-label="Notifications">
-                        <i class="fas fa-bell fs-5"></i>
-                    </a>
-                </li>
+                 <style> .dropdown-menu .d-flex img {
+    border: 1px solid #ddd;
+}
+.dropdown-menu .d-flex small {
+    font-size: 12px;
+}
+</style>
+                <li class="nav-item dropdown me-3">
+    <a class="nav-link text-dark" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+        <i class="fas fa-bell fs-5"></i>
+        <span class="badge bg-warning rounded-circle text-dark position-absolute top-0 start-100 translate-middle">4</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationsDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+        <li class="dropdown-header fw-bold text-secondary">Recently Received Notifications</li>
+        <li>
+            <div class="d-flex align-items-start mb-3">
+                <img src="path-to-image-1.png" alt="Icon" class="me-2 rounded-circle" style="width: 40px; height: 40px;">
+                <div>
+                    <p class="mb-0 fw-bold">LF: EXCLUSIVE DEALS! 🤑</p>
+                    <small class="text-muted">Meron kami sa Shopee LIVE! Watch and check out to get EXCLUSIVE deals and discounts! 👉</small>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="d-flex align-items-start mb-3">
+                <img src="path-to-image-2.png" alt="Icon" class="me-2 rounded-circle" style="width: 40px; height: 40px;">
+                <div>
+                    <p class="mb-0 fw-bold">12NN ONLY: 49% OFF on iPhone!</p>
+                    <small class="text-muted">Hurry! Save 49% OFF on iPhone 14 Plus, 26% OFF on Bosch power tools, & MORE at 12NN only...</small>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="d-flex align-items-start mb-3">
+                <img src="path-to-image-3.png" alt="Icon" class="me-2 rounded-circle" style="width: 40px; height: 40px;">
+                <div>
+                    <p class="mb-0 fw-bold">You just ordered from a shop overseas!</p>
+                    <small class="text-muted">Wow, you just ordered from a shop overseas! Check your shipping status...</small>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="d-flex align-items-start mb-3">
+                <img src="path-to-image-4.png" alt="Icon" class="me-2 rounded-circle" style="width: 40px; height: 40px;">
+                <div>
+                    <p class="mb-0 fw-bold">Reminder: Received Order?</p>
+                    <small class="text-muted">If your order 24123078JP352X has not arrived or is incomplete/damaged, file for return/refund...</small>
+                </div>
+            </div>
+        </li>
+        <li class="text-center">
+            <a href="#" class="text-primary fw-bold text-decoration-none">View All</a>
+        </li>
+    </ul>
+</li>
+
                 <li class="nav-item me-3">
                     <a class="nav-link text-dark" href="#" aria-label="Orders">
                         <i class="fas fa-shopping-bag fs-5"></i>
@@ -61,6 +111,7 @@ session_start(); // Start session to manage user login status
                 </li>
 
                 <!-- User Section -->
+
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <span class="nav-link fw-bold text-dark">
@@ -68,7 +119,7 @@ session_start(); // Start session to manage user login status
                         </span>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="btn btn-warning text-darkfw-bold" href="user_account/user_account.php">
+                        <a class="btn btn-warning text-darkfw-bold" href="account.php">
                             <i class="fas fa-user-circle me-2"></i>My Account
                         </a>
                     </li>
@@ -96,22 +147,30 @@ session_start(); // Start session to manage user login status
         <button class="btn-close" id="closeCartSidebar"></button>
     </div>
     <div class="cart-body py-3">
-        <?php if (!empty($_SESSION['cart'])): ?>
-            <ul class="list-group">
-                <?php foreach ($_SESSION['cart'] as $item): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="fw-bold"><?= htmlspecialchars($item['name']); ?></h6>
-                            <small class="text-muted">Quantity: <?= $item['quantity']; ?></small>
-                        </div>
-                        <span class="text-success fw-bold">$<?= number_format($item['price'], 2); ?></span>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p class="text-muted text-center">Your cart is empty.</p>
-        <?php endif; ?>
-    </div>
+    <?php foreach ($cart as $index => $item): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($item['product_name'] ?? 'Unknown Product'); ?></td>
+                                <td>
+                                    <img src="<?php echo htmlspecialchars($item['image_url'] ?? 'path/to/default-image.jpg'); ?>" 
+                                         alt="<?php echo htmlspecialchars($item['product_name'] ?? 'Image not available'); ?>" 
+                                         style="width: 80px; height: auto; border-radius: 5px;">
+                                </td>
+                                <td>₱<?php echo number_format($item['price'] ?? 0, 2); ?></td>
+                                <td>
+                                    <input type="number" name="quantities[<?php echo $index; ?>]" 
+                                           value="<?php echo $item['quantity'] ?? 1; ?>" 
+                                           min="1" class="form-control" style="width: 80px;">
+                                </td>
+                                <td>₱<?php echo number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2); ?></td>
+                                <td>
+                                    <a href="?action=delete&index=<?php echo $index; ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+                <div class="alert alert-warning">Your cart is empty.</div>
     <div class="cart-footer d-flex justify-content-between align-items-center border-top pt-3">
         <a href="checkout.php" class="btn btn-warning fw-bold text-white px-4">Checkout</a>
         <button class="btn btn-outline-danger fw-bold" id="clearCart">Clear Cart</button>

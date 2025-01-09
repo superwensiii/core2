@@ -1,7 +1,26 @@
 <?php
 // Start session
 session_start();
+
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Validate login credentials...
+
+    if ($is_valid_user) {
+        $_SESSION['user_id'] = $user_id;
+        $redirect_to = $_GET['redirect_to'] ?? 'index.php';
+        header("Location: " . $redirect_to);
+        exit();
+    } else {
+        echo "Invalid credentials!";
+    }
+}
+
 ?>
+
+
 
 <?php include '../db/connect.php'; ?>
 
@@ -119,7 +138,7 @@ if (isset($_POST['login'])) {
                 <a href="#" class="d-block mb-3 text-dark">Forgot password?</a>
                 <button type="submit" name="login" class="btn btn-warning w-100">Login</button>
             </form>
-            <p class="mt-3 text-dark text-center">Don’t have an account? <a href="register.php" class="text-dark"> Signup</a></p>
+            <p class="mt-3 text-dark text-center">Don’t have an account? <a href="../gmailreg.php" class="text-dark"> Signup</a></p>
             <div class="my-3">
                 <span class=" text-center">Or</span>
             </div>

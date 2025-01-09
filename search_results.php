@@ -47,6 +47,7 @@ $conn->close(); // Close the connection
     
 </head>
 <body>
+<?php include 'navbar.php'; ?>
 
 <style>
     body {
@@ -119,58 +120,56 @@ $conn->close(); // Close the connection
 }
 
     </style>
-    <?php include 'navbar.php'; ?>
+    
     <div class="container mt-5">
         <h2 class="mb-4">Search Results for "<?php echo htmlspecialchars($search_box); ?>"</h2>
 
-        <?php if (!empty($products)): ?>
-            <div class="row g-3">
-                <?php foreach ($products as $product): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card shadow-sm h-100">
-                            <a href="quick_view.php?id=<?php echo $product['id']; ?>">
-                                <img 
-                                    src="<?php echo $product['image_url']; ?>" 
-                                    class="card-img-top img-fluid" 
-                                    alt="<?php echo $product['product_name']; ?>"
-                                    style="max-height: 200px; object-fit: cover;"
-                                >
-                            </a>
-                            <div class="card-body text-center">
-                                <h5 class="card-title text-truncate"><?php echo $product['product_name']; ?></h5>
-                                <p class="text-muted text-truncate"><?php echo $product['product_description']; ?></p>
-                                <p>
-                                    <del class="text-muted">₱<?php echo number_format($product['original_price'], 2); ?></del>
-                                    <span class="price">₱<?php echo number_format($product['discounted_price'], 2); ?></span>
-                                    <span class="discount"><?php echo $product['discount_percentage']; ?>% OFF</span>
-                                </p>
-                                <div class="d-flex justify-content-center action-buttons gap-3 mb-3">
-                                    <button class="btn btn-outline-warning btn-sm">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
-                                    <button 
-                                        class="btn btn-outline-dark btn-sm" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#productModal<?php echo $product['id']; ?>">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                                <div class="ratings">
-                                    <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-                                    <span class="text-muted">(<?php echo rand(100, 500); ?>)</span>
-                                </div>
-                            </div>
+        <div class="row">
+    <?php if (!empty($products)): ?>
+        <?php foreach ($products as $product): ?>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <a href="quick_view.php?id=<?php echo $product['id']; ?>">
+                        <img 
+                            src="<?php echo $product['image_url']; ?>" 
+                            class="card-img-top img-fluid" 
+                            alt="<?php echo $product['product_name']; ?>"
+                            style="height: 250px; object-fit: cover;"
+                        >
+                    </a>
+                    <div class="card-body d-flex flex-column justify-content-between text-center">
+                        <h5 class="card-title text-truncate"> <?php echo $product['product_name']; ?> </h5>
+                        <p class="small text-muted text-truncate"> <?php echo $product['product_description']; ?> </p>
+                        <p class="mb-2">
+                            <del class="text-muted">₱<?php echo number_format($product['original_price'], 2); ?></del>
+                            <span class="text-dark fw-bold">₱<?php echo number_format($product['discounted_price'], 2); ?></span>
+                            <span class="badge bg-success ms-1"> <?php echo $product['discount_percentage']; ?>% OFF</span>
+                        </p>
+                        <form action="checkout.php" method="POST">
+                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                            <input type="hidden" name="product_name" value="<?php echo $product['product_name']; ?>">
+                            <input type="hidden" name="price" value="<?php echo $product['discounted_price']; ?>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button class="btn btn-outline-warning btn-sm" type="submit">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                        <div>
+                            <span class="text-warning">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                            <span class="text-muted">(<?php echo rand(100, 500); ?>)</span>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                </div>
             </div>
-        <?php else: ?>
-            <p>No products match your search.</p>
-        <?php endif; ?>
-    </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="col-12 text-center">
+            <p class="text-muted">No results found.</p>
+        </div>
+    <?php endif; ?>
+</div>
+<?php include 'footer.php'; ?>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

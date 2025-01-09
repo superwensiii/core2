@@ -1,33 +1,50 @@
-<?php 
+<?php
 // Include database connection
 include '../db/connect.php';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-  // Get form data and sanitize input
-  $email = mysqli_real_escape_string($conn, $_POST['email']);
-  $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
-  $surname = mysqli_real_escape_string($conn, $_POST['surname']);
-  $phone = mysqli_real_escape_string($conn, $_POST['phone']);
-  $address = mysqli_real_escape_string($conn, $_POST['address']);
-  $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing password
+    // Check if all required fields are set
+    if (
+        isset($_POST['email'], $_POST['first_name'], $_POST['surname'], $_POST['phone'], $_POST['address'], $_POST['password'], $_POST['gender'])
+    ) {
+        // Get form data and sanitize input
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+        $surname = mysqli_real_escape_string($conn, $_POST['surname']);
+        $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+        $address = mysqli_real_escape_string($conn, $_POST['address']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing password
+        $gender = mysqli_real_escape_string($conn, $_POST['gender']);
 
-  // Prepare the SQL query
-  $sql = "INSERT INTO users (email, first_name, surname, phone, address, password) 
-          VALUES ('$email', '$first_name', '$surname', '$phone', '$address', '$password')";
+        // Validate gender
+        $allowed_genders = ['Male', 'Female', 'Other'];
+        if (!in_array($gender, $allowed_genders)) {
+            echo "<div class='alert alert-danger'>Invalid gender selected!</div>";
+            exit;
+        }
 
-  // Check if the query was successful
-  if ($conn->query($sql) === TRUE) {
-    echo "<div class='alert alert-success'>New record created successfully!</div>";
-  } else {
-    echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
-  }
+        // Prepare the SQL query
+        $sql = "INSERT INTO users (email, first_name, surname, phone, address, password, gender) 
+                VALUES ('$email', '$first_name', '$surname', '$phone', '$address', '$password', '$gender')";
 
-  // Close the connection
-  $conn->close();
+        // Check if the query was successful
+        if ($conn->query($sql) === TRUE) {
+            echo "<div class='alert alert-success'>New record created successfully!</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
+        }
+    } else {
+        echo "<div class='alert alert-danger'>Please fill in all required fields.</div>";
+    }
 }
+
+// Close the connection
+$conn->close();
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -139,6 +156,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="email" class="form-control" id="email" name="email" required>
           </div>
         </div>
+
+        <div class="row mb-3">
+  <div class="col-md-12">
+    <label for="address" class="form-label">Address</label>
+    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+  </div>
+</div>
+        <div class="row mb-3">
+  <div class="col-md-6">
+    <label for="gender" class="form-label">Gender</label>
+    <select class="form-select" id="gender" name="gender" required>
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+</div>
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="password" class="form-label">Password</label>

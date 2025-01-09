@@ -35,6 +35,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Section</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     .product-section {
       background-color: whitesmoke;
@@ -162,7 +163,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 <!-- Buttons -->
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-warning flex-grow-1">
-                        <i class="bi bi-cart-plus btn-icon"></i>Add to Cart
+                        <i class="bi bi-cart-plus btn-icon" a href="cart.php"></i>Add to Cart
                     </button>
                     <button type="button" class="btn btn-dark flex-grow-1">
                         <i class="bi bi-bag-check btn-icon" a href="checkout.php"></i>Checkout
