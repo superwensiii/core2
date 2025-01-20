@@ -173,6 +173,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         </div>
     </div>
 </div>
+
+
 <script src="path/to/bootstrap.bundle.js"></script>
 
     <!-- Customer Reviews Section -->

@@ -92,18 +92,89 @@ if (session_status() === PHP_SESSION_NONE) {
 </li>
 
                 <li class="nav-item me-3">
-                    <a class="nav-link text-dark" href="#" aria-label="Orders">
+                    <a class="nav-link text-dark" href="my_orders.php" aria-label="Orders">
                         <i class="fas fa-shopping-bag fs-5"></i>
                     </a>
                 </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link text-dark position-relative" href="#" id="cartIcon" aria-label="Cart">
-                        <i class="fas fa-cart-shopping fs-5"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge bg-warning text-dark">
-                            3 <!-- Replace with PHP cart count -->
-                        </span>
-                    </a>
-                </li>
+                <li class="nav-item me-3 position-relative">
+    <a class="nav-link text-dark" href="cart.php" aria-label="Cart">
+        <i class="fas fa-shopping-cart fs-5"></i>
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+            
+        </span>
+    </a>
+</li>
+
+<script>
+let cartCount = 0;
+
+function addToCart(button) {
+    // Get the product image source
+    const card = button.closest('.card');
+    const imgSrc = card.querySelector('img').src;
+
+    // Create a flying image element
+    const flyingImage = document.createElement('img');
+    flyingImage.src = imgSrc;
+    flyingImage.style.position = 'fixed'; // Ensure fixed position for smooth transition
+    flyingImage.style.width = '300px'; // Starting size of the image
+    flyingImage.style.borderRadius = '100%';
+    flyingImage.style.transition = 'all 1s ease-in-out';
+    flyingImage.style.zIndex = 1000;
+
+    // Append the flying image to the body
+    document.body.appendChild(flyingImage);
+
+    // Get the position of the product image
+    const rect = card.querySelector('img').getBoundingClientRect();
+    flyingImage.style.top = `${rect.top + window.scrollY}px`;
+    flyingImage.style.left = `${rect.left + window.scrollX}px`;
+
+    // Get the cart icon position
+    const cartIcon = document.querySelector('.nav-link[aria-label="Cart"] i');
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    // Animate the flying image to the cart icon
+    setTimeout(() => {
+        flyingImage.style.top = `${cartRect.top + window.scrollY}px`; // Adjust for scrolling
+        flyingImage.style.left = `${cartRect.left + window.scrollX}px`;
+        flyingImage.style.width = '100px'; // Shrink the image
+        flyingImage.style.opacity = '10';
+    }, 100);
+
+    // Remove the flying image and update cart count
+    flyingImage.addEventListener('transitionend', () => {
+        document.body.removeChild(flyingImage);
+
+        // Update the cart count
+        cartCount += 1;
+        document.getElementById('cart-count').textContent = cartCount;
+
+        // Now submit the form (after animation is complete)
+        button.closest('form').submit();
+    });
+}
+
+
+
+
+</script>
+
+<style>
+    #cart-count {
+    font-size: 0.75rem;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 2px;
+}
+
+</style>
+
+
                 <li class="nav-item me-3">
                     <a class="nav-link text-dark" href="#" aria-label="Wishlist">
                         <i class="fas fa-heart fs-5"></i>
@@ -119,7 +190,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </span>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="btn btn-warning text-darkfw-bold" href="account.php">
+                        <a class="btn btn-warning text-darkfw-bold" href="user_account/account.php">
                             <i class="fas fa-user-circle me-2"></i>My Account
                         </a>
                     </li>
@@ -141,86 +212,6 @@ if (session_status() === PHP_SESSION_NONE) {
 </nav>
 
 <!-- Cart Sidebar -->
-<div id="cartSidebar" class="cart-sidebar">
-    <div class="cart-header d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold text-dark">Your Cart</h5>
-        <button class="btn-close" id="closeCartSidebar"></button>
-    </div>
-    <div class="cart-body py-3">
-    <?php foreach ($cart as $index => $item): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($item['product_name'] ?? 'Unknown Product'); ?></td>
-                                <td>
-                                    <img src="<?php echo htmlspecialchars($item['image_url'] ?? 'path/to/default-image.jpg'); ?>" 
-                                         alt="<?php echo htmlspecialchars($item['product_name'] ?? 'Image not available'); ?>" 
-                                         style="width: 80px; height: auto; border-radius: 5px;">
-                                </td>
-                                <td>₱<?php echo number_format($item['price'] ?? 0, 2); ?></td>
-                                <td>
-                                    <input type="number" name="quantities[<?php echo $index; ?>]" 
-                                           value="<?php echo $item['quantity'] ?? 1; ?>" 
-                                           min="1" class="form-control" style="width: 80px;">
-                                </td>
-                                <td>₱<?php echo number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2); ?></td>
-                                <td>
-                                    <a href="?action=delete&index=<?php echo $index; ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-                <div class="alert alert-warning">Your cart is empty.</div>
-    <div class="cart-footer d-flex justify-content-between align-items-center border-top pt-3">
-        <a href="checkout.php" class="btn btn-warning fw-bold text-white px-4">Checkout</a>
-        <button class="btn btn-outline-danger fw-bold" id="clearCart">Clear Cart</button>
-    </div>
-</div>
-
-<!-- Sidebar CSS -->
-<style>
-    .cart-sidebar {
-        position: fixed;
-        top: 0;
-        right: -350px;
-        width: 350px;
-        height: 100%;
-        background-color: #fff;
-        box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
-        transition: right 0.4s ease;
-        z-index: 9999;
-        padding: 20px;
-    }
-
-    .cart-sidebar.open {
-        right: 0;
-    }
-
-    .cart-header {
-        border-bottom: 2px solid #f5f5f5;
-        padding-bottom: 10px;
-    }
-
-    .btn-warning {
-        background-color: #ffb100;
-        border-color: #ffb100;
-    }
-
-    .btn-outline-warning:hover {
-        background-color: #ffb100;
-        color: #fff;
-    }
-
-    .nav-link:hover {
-        color: #ffb100 !important;
-    }
-
-    .badge {
-        font-size: 12px;
-        padding: 5px 8px;
-        border-radius: 50%;
-    }
-</style>
 
 
 

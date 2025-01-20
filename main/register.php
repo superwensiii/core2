@@ -126,11 +126,7 @@ $conn->close();
 <div class="container-fluid">
   <div class="row w-100">
     <!-- Left Section -->
-    <div class="col-md-4 left-section">
-      
-      <h1>Big Bazzar</h1>
-      <p>Your one-stop shop for everything!</p>
-    </div>
+    
 
     <!-- Right Section -->
     <div class="col-md-8 right-section">

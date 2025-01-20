@@ -49,43 +49,43 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <h5 class="text-center fw-bold mb-4 bg-warning">Admin Dashboard</h5>
+        <h5 class="text-center fw-bold mb-4 ">Admin Dashboard</h5>
         <ul class="nav flex-column">
             <!-- Products Section -->
             <li class="nav-item">
-                <a class="nav-link bg-warning" href="#">
+                <a class="nav-link bg-dark text-white" href="#">
                     <i class="fa-solid fa-box icon"></i> Products
                 </a>
                 <ul class="list-unstyled ms-3">
-                    <li><a class="nav-link" href="#"><i class="fa-solid fa-list icon"></i> All Products</a></li>
+                    <li><a class="nav-link" href="all_products.php"><i class="fa-solid fa-list icon"></i> All Products</a></li>
                     <li><a class="nav-link" href="#"><i class="fa-solid fa-tags icon"></i> Categories</a></li>
-                    <li><a class="nav-link" href="#"><i class="fa-solid fa-warehouse icon"></i> Inventory</a></li>
+                    <li><a class="nav-link" href="inventory.php"><i class="fa-solid fa-warehouse icon"></i> Inventory</a></li>
                 </ul>
             </li>
             <!-- Orders Section -->
             <li class="nav-item">
-                <a class="nav-link bg-warning" href="#">
+                <a class="nav-link bg-dark text-white" href="#">
                     <i class="fa-solid fa-shopping-cart icon"></i> Orders
                 </a>
                 <ul class="list-unstyled ms-3">
-                    <li><a class="nav-link" href="#"><i class="fa-solid fa-receipt icon"></i> All Orders</a></li>
+                    <li><a class="nav-link" href="view_orders.php"><i class="fa-solid fa-receipt icon"></i> All Orders</a></li>
                     <li><a class="nav-link" href="#"><i class="fa-solid fa-truck icon"></i> Shipments</a></li>
                     <li><a class="nav-link" href="#"><i class="fa-solid fa-dollar-sign icon"></i> Transactions</a></li>
                 </ul>
             </li>
             <!-- Customers Section -->
             <li class="nav-item">
-                <a class="nav-link bg-warning" href="#">
+                <a class="nav-link bg-dark text-white" href="#">
                     <i class="fa-solid fa-users icon"></i> Customers
                 </a>
                 <ul class="list-unstyled ms-3">
-                    <li><a class="nav-link" href="#"><i class="fa-solid fa-user icon"></i> All Customers</a></li>
+                    <li><a class="nav-link" href="all_customers.php"><i class="fa-solid fa-user icon"></i> All Customers</a></li>
                     <li><a class="nav-link" href="#"><i class="fa-solid fa-comment icon"></i> Reviews</a></li>
                 </ul>
             </li>
             <!-- Settings Section -->
             <li class="nav-item">
-                <a class="nav-link bg-warning" href="#">
+                <a class="nav-link bg-dark text-white" href="#">
                     <i class="fa-solid fa-cog icon"></i> Settings
                 </a>
                 <ul class="list-unstyled ms-3">
@@ -130,8 +130,11 @@
                             <label for="category" class="form-label">Category</label>
                             <select id="category" class="form-select">
                                 <option selected disabled>Select category</option>
-                                <option>CAT</option>
-                                <option>Dog</option>
+                                <option>Tumbler</option>
+                                <option>Utensils</option>
+                                <option>Powerbank</option>
+                                <option>Mini Fan</option>
+                                <option>Coat</option>
                             </select>
                         </div>
                     </div>
@@ -141,13 +144,10 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="basePrice" class="form-label">Base Price ($)</label>
+                            <label for="basePrice" class="form-label">Base Price P</label>
                             <input type="number" id="basePrice" class="form-control" placeholder="Enter base price">
                         </div>
-                        <div class="col-md-6">
-                            <label for="brand" class="form-label">Brand</label>
-                            <input type="text" id="brand" class="form-control" placeholder="Enter brand name">
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -158,15 +158,15 @@
                 <div class="card-body">
                     <div class="row align-items-center mb-3">
                         <div class="col-md-4">
-                            <label for="size" class="form-label">Size</label>
+                            <label for="size" class="form-label">Color</label>
                             <select id="size" class="form-select">
-                                <option selected disabled>Select size</option>
-                                <option>M</option>
-                                <option>L</option>
+                                <option selected disabled>Select Color</option>
+                                <option>Yellow</option>
+                                <option>Red</option>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="price" class="form-label">Price ($)</label>
+                            <label for="price" class="form-label">Price (P)</label>
                             <input type="number" id="price" class="form-control" placeholder="Enter price">
                         </div>
                         <div class="col-md-4">
@@ -174,7 +174,7 @@
                             <input type="number" id="stock" class="form-control" placeholder="Enter stock">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-success">+ Add Size</button>
+                    <button type="button" class="btn btn-warning">+ Add Color</button>
                 </div>
             </div>
 
